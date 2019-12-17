@@ -1,0 +1,33 @@
+- name: NGINX INSTALL
+  connection: network_cli
+  gather_facts: false
+  hosts: 127.0.0.1
+  become: true
+  connection: local
+  
+  tasks:
+  - name: Install nginx
+    yum:
+      name: nginx
+      state: present
+  - name: start nginx 
+    service:
+      name: nginx
+      state: started
+
+  - name: Create a directory if it does not exist
+    file:
+      path: /etc/some_directory
+      state: directory
+      mode: '0755'
+
+  - name: Create file
+    file:
+      path: /etc/some_directory/test
+      state: touch
+
+  - name: Run ls.sh and output "ls /"
+    script: ls.sh
+    register: out
+
+  - debug: var=out.stdout_lines
