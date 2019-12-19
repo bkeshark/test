@@ -48,3 +48,12 @@
       line: Environment="cgroup-driver=systemd/cgroup-driver=cgroupfs"
       create: yes
       state: present
+
+  - name: kubeinit
+    command: kubeadm init --apiserver-advertise-address=hostvars[inventory_hostname]['ansible_default_ipv4']['address'] --pod-network-cidr=192.168.0.0/16 
+
+  - name: create .kube
+    command: mkdir -p $HOME/.kube;cp -i /etc/kubernetes/admin.conf $HOME/.kube/config; chown $(id -u):$(id -g) $HOME/.kube/config
+
+  - name: kubectl apply calio
+    command: kubectl apply -f  https://docs.projectcalico.org/v3.8/manifests/calico.yaml
