@@ -1,0 +1,50 @@
+- name: KUBE MASTER INSTALL
+  connection: network_cli
+  gather_facts: false
+  hosts: 127.0.0.1
+  become: true
+  connection: local
+
+  tasks:
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+  - name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+    shell: |
+      swapoff -a
+  - name: install openssh server
+    apt:
+      pkg:
+      - openssh-server
+      - docker.io
+      - apt-transport-https
+      - curl
+
+  - name: Add an Apt signing key, uses whichever key is at the URL
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Add a line to a file if the file does not exist, without passing regexp
+    lineinfile:
+      destfile: /etc/apt/sources.list.d/kubernetes.list
+      line: deb http://apt.kubernetes.io/ kubernetes-xenial main
+      create: yes
+      state: present
+  - name: Run the equivalent of "apt-get update"
+    apt:
+      update_cache: yes
+
+  - name: install kube
+    apt:
+      pkg:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+  - name: kubeadm update
+    lineinfile:
+      destfile: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+      line: Environment="cgroup-driver=systemd/cgroup-driver=cgroupfs"
+      create: yes
+      state: present
