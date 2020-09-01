@@ -2,6 +2,10 @@ pipeline{
     
     agent any
 
+    options {
+        timestamp()
+        ansiColor()
+    }
     stages{
         stage("A"){
             steps{
