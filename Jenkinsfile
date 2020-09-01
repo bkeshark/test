@@ -25,6 +25,11 @@ pipeline{
                 }
             }
         }
+        stage("B") {
+            steps {
+                echo "This is in stage B"
+            }
+        }
     }
     post{
         always{
