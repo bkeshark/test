@@ -3,8 +3,7 @@ pipeline{
     agent any
 
     options {
-        timestamp()
-        ansiColor()
+        timestamps()
     }
     stages{
         stage("A"){
