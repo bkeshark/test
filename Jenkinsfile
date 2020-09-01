@@ -10,6 +10,8 @@ pipeline{
         stage("A"){
             steps{
                 echo "========executing A========"
+                echo "This is stage A"
+                sh("ls -lrt")
             }
             post{
                 always{
